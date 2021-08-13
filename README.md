@@ -17,6 +17,9 @@ node  + uniapp
 6.  暂停消息显示，可提供分析问题
 7.  只显示最新推送消息，可提供分析问题
 
+#### 体验demo
+[ws工具](http://www.ywq2d.com:8089/#/)
+
 #### 页面截图
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0813/164419_5df07eff_5287518.png "屏幕截图.png")
