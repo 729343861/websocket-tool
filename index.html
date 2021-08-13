@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <!--preload-links-->
+    <!--app-context-->
+  </head>
+  <body>
+    <div id="app" style="min-width:1200px;" ><!--app-html--></div>
+    <script type="module" src="/main.js"></script>
+  </body>
+  
+  <script>
+  
+	  function isDeviceMobile() {//
+		  var u = navigator.userAgent
+		  var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 //android终端
+		  var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) //ios终端
+		  if (isiOS || isAndroid) {
+			return true
+		  } else {
+			return false
+		  }
+	   }
+
+  </script>
+</html>
