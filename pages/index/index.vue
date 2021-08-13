@@ -219,7 +219,7 @@
 								});
 								socketTask.onOpen(function(){
 									   this_.successConn += 1;
-		
+									   this_.setCache();
 								})
 								
 								socketTask.onMessage(function(res){
