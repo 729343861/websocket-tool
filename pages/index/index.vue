@@ -21,7 +21,7 @@
 							</view>
 							<uni-row class="demo-uni-row">
 								<uni-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" >
-									<uni-easyinput prefixIcon="paperclip"  type="text" v-model="connect.ws_url" placeholder="请输入ws地址" />
+									<uni-easyinput prefixIcon="paperclip"  type="text" @blur="getCache" v-model="connect.ws_url" placeholder="请输入ws地址" />
 					
 								</uni-col>
 								<uni-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4">
@@ -58,7 +58,7 @@
 												秒发送心跳
 												</uni-col>
 												<uni-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4" class="ping-border">
-												Ping
+												  <input type="text"  v-model="pingText" placeholder="ping" style="text-align: center;" />
 												</uni-col>
 												<uni-col :xs="6" :sm="6" :md="6" :lg="6" :xl="6" class="ping-border">
 													<button class="ping-btn" :class="[pingSwitch?'cancelPing':'sendPing']" @click="startPing" >{{pingBtnText}}</button>
@@ -74,15 +74,36 @@
 										</view>
 										
 										<view class="demo-uni-col light" style="padding-top: 20rpx;">
-											<uni-title type="h1" title="发送记录" color="#027fff"></uni-title>
+											
+											  
+												
+											  	
+											  <uni-row class="demo-uni-row">
+											      <uni-col :span="12">
+											          <view class="demo-uni-col dark">
+														  <uni-title type="h1" title="发送记录" color="#027fff" align="left"></uni-title>
+													  </view>
+											      </uni-col>
+											      <uni-col :span="12">
+											          <view class="demo-uni-col light" style="padding-top: 13rpx;text-align: right;">
+														  <uni-icons type="trash" size="24" @click="clearMsg"  color="#027fff"></uni-icons>
+													  </view>
+											      </uni-col>
+											  </uni-row>
+								
 										</view>
 										<view class="demo-uni-col light" style="padding-top: 20rpx;">
 											<hr>
 										</view>
 										<view class="demo-uni-col light send-box" >
+									
 											<view v-for="val,index in sendbox" :key="index">
-												<span style="color: #28a745;">{{val.time_}}	 => </span> <pre> {{val.msg}} </pre>
+												<uni-icons type="reload" size="24" @click="reloadMsg(val.msg)" color="#027fff"></uni-icons>
+												<span style="color: #28a745;">{{val.time_}}	 => </span> 
+												<pre> {{val.msg}} </pre>
+										
 											</view>
+							
 	
 										</view>
 									</uni-col>
@@ -91,7 +112,20 @@
 									</uni-col>
 									<uni-col :xs="11" :sm="11" :md="11" :lg="11" :xl="11">
 											<view class="demo-uni-col light">
-												<uni-title type="h1" title="消息接收区" color="#027fff"></uni-title>
+									
+												
+												<uni-row class="demo-uni-row">
+												    <uni-col :span="12">
+												        <view class="demo-uni-col dark">
+															<uni-title type="h1" title="消息接收区" color="#027fff"></uni-title>											 
+														</view>
+												    </uni-col>
+												    <uni-col :span="12">
+												        <view class="demo-uni-col light" style="padding-top: 13rpx;text-align: right;">
+															<uni-icons type="trash" size="24" @click="clearResMsg"  color="#027fff"></uni-icons>
+														</view>
+												    </uni-col>
+												</uni-row>
 											</view>
 											<view class="demo-uni-col light">
 												   
@@ -149,10 +183,11 @@
 			return {
 				href: 'https://uniapp.dcloud.io/component/README?id=uniui',
 				connect:{
-					ws_url:"ws://127.0.0.1:8083/ws",
-					count:10,
+					ws_url:"ws://127.0.0.1:8082/ws",
+					count:1,
 				},
 				value:"",
+				pingText:"ping",
 				interval:1,
 				pingSwitch:false,
 				intervalId:0,
@@ -202,7 +237,12 @@
 				var time = new Date().Format("yyyy-MM-dd hh:mm:ss");
 				this.sendbox.push({msg:this.content,time_:time})
 				this.WebSocketPool[0].send({data: this.content});
+				this.setCache()
 			
+			},
+			reloadMsg(msg){
+				
+				this.content = msg;
 			},
 			connectFunc(){
 					let this_ = this;
@@ -275,6 +315,7 @@
 					
 					}
 				   uni.setStorageSync(this.cacheKey, data);
+				   uni.setStorageSync(this.connect.ws_url,this.sendbox);
 					this.getCache();
 				} catch (e) {
 				    // error
@@ -284,17 +325,35 @@
 		
 			},
 			getCache(){
+				
+				console.log('getcache');
 				 try {
 				     const value = uni.getStorageSync(this.cacheKey);
 				     if (value) {
 				         this.history = value;
 				     }
+					 const sendMSgBox = uni.getStorageSync(this.connect.ws_url);
+					 if(sendMSgBox){
+						 this.sendbox = sendMSgBox;
+					 }else{
+						 this.sendbox = []
+					 }
 				 } catch (e) {
 				 }
 			},
+			clearMsg(){
+				
+				uni.removeStorageSync(this.connect.ws_url)
+				this.getCache()
+			},
+			clearResMsg(){
+				this.msgbox = []
+			},
 			setWsUrl(ws_url){
 				this.connect.ws_url = ws_url;
+				this.getCache();
 			},
+		
 			 checkboxChange: function (e) {
 				var items = this.checkBoxItems,
 					values = e.detail.value;
@@ -331,8 +390,8 @@
 			},
 			sendPing(){
 				
-				this.WebSocketPool[0].send({data: parseInt(Math.random()*1000+1,10) });
-				console.log("开始定时"+parseInt(Math.random()*1000+1,10));
+				this.WebSocketPool[0].send({data: this.pingText });
+				console.log("开始定时"+this.pingText);
 			},
 			startPing(){
 				
@@ -386,7 +445,7 @@
 	}
 	.send-box{
 		padding-top: 20rpx;
-		height: 300px; 
+		height: 420px; 
 		overflow-y:auto; 
 		overflow-x:auto;
 	}
