@@ -22,6 +22,12 @@ node  + uniapp
 #### 体验demo
 [ws工具](http://www.ywq2d.com:8089/#/)
 
+#### 使用说明
+
+1.下载HBuilder X
+2.使用HBuilder X 打开源代码
+3.![image](https://user-images.githubusercontent.com/35519825/145509938-04cde0c0-efaa-4d78-a4df-bed1a6a69438.png)
+
 
 #### 页面截图
 
@@ -29,3 +35,5 @@ node  + uniapp
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0816/113914_e4637d7b_5287518.png "屏幕截图.png")
 
+#### 如果有什么疑问请扫码加微信探讨研究
+![微信二维码](https://user-images.githubusercontent.com/35519825/145509755-306ec999-12bc-4fd2-a10a-aaa25247957f.jpg)
