@@ -24,9 +24,9 @@ node  + uniapp
 
 #### 使用说明
 
-1.下载HBuilder X
-2.使用HBuilder X 打开源代码
-3.![image](https://user-images.githubusercontent.com/35519825/145509938-04cde0c0-efaa-4d78-a4df-bed1a6a69438.png)
+1.  下载HBuilder X
+2.  使用HBuilder X 打开源代码
+3.  ![image](https://user-images.githubusercontent.com/35519825/145509938-04cde0c0-efaa-4d78-a4df-bed1a6a69438.png)
 
 
 #### 页面截图
