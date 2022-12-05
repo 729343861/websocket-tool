@@ -1,91 +1,71 @@
 <template>
 	<view class="container">
+		
 		<uni-row class="demo-uni-row">
-			<uni-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4" >
+			<uni-col :xs="24" :sm="24" :md="4" :lg="4" :xl="4" >
 				<view class="demo-uni-col dark">
-
-							<uni-title type="h1" title="历史记录" color="#027fff"></uni-title>
-							<uni-list :border=true>
-										<uni-list-item  :title="(item.ws_url)" :show-badge="true" :clickable="true" :badge-text="(item.count)"  @click="setWsUrl(item.ws_url)" v-for="(item,index) in history" :key="index" ></uni-list-item>									
-							</uni-list>		
-
+					<uni-title type="h1" title="历史记录" color="#027fff"></uni-title>
+					<uni-list :border=true>
+						<uni-list-item  :title="(item.ws_url)" :show-badge="true" :clickable="true" :badge-text="(item.count)"  @click="setWsUrl(item.ws_url)" v-for="(item,index) in history" :key="index" ></uni-list-item>									
+					</uni-list>		
 				</view>
-				
+			
 			</uni-col>
-			<uni-col :xs="1" :sm="1" :md="1" :lg="1" :xl="1">
-			</uni-col>
-			<uni-col :xs="17" :sm="17" :md="17" :lg="17" :xl="17">
+<!-- 			<uni-col :xs="8" :sm="24" :md="1" :lg="1" :xl="1">
+			</uni-col> -->
+			<uni-col :xs="24" :sm="24" :md="17" :lg="17" :xl="17">
 						<view>
 							<view class="demo-uni-col light">
-								<uni-title type="h1" title="测试操作区" color="#027fff"></uni-title>
+								<uni-title type="h1" title="连接区" color="#027fff"></uni-title>
 							</view>
 							<uni-row class="demo-uni-row">
-								<uni-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" >
+								<uni-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" >
 									<uni-easyinput prefixIcon="paperclip"  type="text" @blur="getCache" v-model="connect.ws_url" placeholder="请输入ws地址" />
-					
 								</uni-col>
-								<uni-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4">
+								<uni-col :xs="8" :sm="8" :md="4" :lg="4" :xl="4">
 									<uni-easyinput type="number"  v-model="connect.count" placeholder="客户端数(最大253)" />				
 								</uni-col>
-								<uni-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4">
-										<button class="conn-btn" @click="connectFunc" >连接</button>
+								<uni-col :xs="8" :sm="8" :md="4" :lg="4" :xl="4">
+									<button class="conn-btn" @click="connectFunc" >连接</button>
 								</uni-col>
-								<uni-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4"  style="padding-left: 20px;padding-top: 3px;">
-										<uni-tag :text="'连接数:'+(successConn)" type="success" :circle="true"></uni-tag>
+								<uni-col :xs="8" :sm="8" :md="4" :lg="4" :xl="4"  style="padding-left: 20px;padding-top: 3px;">
+									<uni-tag :text="'连接数:'+(successConn)" type="success" :circle="true"></uni-tag>
 								</uni-col>
-								
 							</uni-row>
-<!-- 							<uni-row class="demo-uni-row">
-								<uni-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" >
-									<view style="padding-top: 10rpx;">
-										<uni-easyinput type="textarea" autoHeight  v-model="connect.headers" placeholder="请求头信息,填入json字符串"></uni-easyinput>
-									</view>
-								</uni-col>	
-							</uni-row> -->
 
 						</view>
-
 						<view style="padding-top:40rpx ;">
-								<uni-row class="demo-uni-row" >
-									
-									<uni-col :xs="11" :sm="11" :md="11" :lg="11" :xl="11">
+								<uni-row class="demo-uni-row" >							
+									<uni-col :xs="24" :sm="24" :md="11" :lg="11" :xl="11">
 										<view class="demo-uni-col light">
 											<uni-title type="h1" title="发送区域(以连接数进行并发)" color="#027fff"></uni-title>
 										</view>
-										<view>
-											
+										<view>											
 											<uni-row class="demo-uni-row ping-box" >
-
 												<uni-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4" class="ping-border" >
-												每隔
+													每隔
 												</uni-col>
 												<uni-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4" class="ping-border">
-													 <input type="number"  v-model="interval" placeholder="1" style="text-align: center;" />
+													<input type="number"  v-model="interval" placeholder="1" style="text-align: center;" />
 												</uni-col>
 												<uni-col :xs="6" :sm="6" :md="6" :lg="6" :xl="6" class="ping-border">
-												秒发送心跳
+													秒发送心跳
 												</uni-col>
 												<uni-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4" class="ping-border">
-												  <input type="text"  v-model="pingText" placeholder="心跳内容" style="text-align: center;" />
+													<input type="text"  v-model="pingText" placeholder="心跳内容" style="text-align: center;" />
 												</uni-col>
 												<uni-col :xs="6" :sm="6" :md="6" :lg="6" :xl="6" class="ping-border">
 													<button class="ping-btn" :class="[pingSwitch?'cancelPing':'sendPing']" @click="startPing" >{{pingBtnText}}</button>
 												</uni-col>
-											</uni-row>
-		
+											</uni-row>		
 										</view>		
 										<view style="padding-top: 10rpx;">
 											<uni-easyinput type="textarea" autoHeight style="background-color:#ced4da; " v-model="content" placeholder="发送到服务器的数据包内容"></uni-easyinput>
 										</view>
 										<view style="padding-top: 10rpx;">
-											       <button class="button" type="primary" style="background-color: #28a745;" @click="sendMsg">发送</button>
-										</view>
-										
-										<view class="demo-uni-col light" style="padding-top: 20rpx;">
-											
-											  
-												
-											  	
+											<button class="button" type="primary" style="background-color: #28a745;" @click="sendMsg">发送</button>
+										</view>										
+										<view class="demo-uni-col light" style="padding-top: 20rpx;">											  	
 											  <uni-row class="demo-uni-row">
 											      <uni-col :span="12">
 											          <view class="demo-uni-col dark">
@@ -97,31 +77,24 @@
 														  <uni-icons type="trash" size="24" @click="clearMsg"  color="#027fff"></uni-icons>
 													  </view>
 											      </uni-col>
-											  </uni-row>
-								
+											  </uni-row>								
 										</view>
 										<view class="demo-uni-col light" style="padding-top: 20rpx;">
 											<hr>
 										</view>
-										<view class="demo-uni-col light send-box" >
-									
+										<view class="demo-uni-col light send-box" >									
 											<view v-for="val,index in sendbox" :key="index">
 												<uni-icons type="reload" size="24" @click="reloadMsg(val.msg)" color="#027fff"></uni-icons>
 												<span style="color: #28a745;">{{val.time_}}	 => </span> 
-												<pre> {{val.msg}} </pre>
-										
-											</view>
-							
-	
+												<pre> {{val.msg}} </pre>										
+											</view>	
 										</view>
 									</uni-col>
-									<uni-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2" style="text-align: center;">
+									<uni-col v-show="is_show" :xs="2" :sm="2" :md="2" :lg="2" :xl="2" style="text-align: center;">
 										<view class="line"></view>
 									</uni-col>
-									<uni-col :xs="11" :sm="11" :md="11" :lg="11" :xl="11">
-											<view class="demo-uni-col light">
-									
-												
+									<uni-col :xs="24" :sm="24" :md="11" :lg="11" :xl="11">
+											<view class="demo-uni-col light">																			
 												<uni-row class="demo-uni-row">
 												    <uni-col :span="12">
 												        <view class="demo-uni-col dark">
@@ -135,24 +108,20 @@
 												    </uni-col>
 												</uni-row>
 											</view>
-											<view class="demo-uni-col light">
-												   
+											<view class="demo-uni-col light">												   
 												<checkbox-group  @change="checkboxChange"  >
 													<label  v-for="item in checkBoxItems" :key="item.value">
 														<checkbox :value="item.value" :checked="item.checked" />{{item.name}}
 													</label>
-
 												</checkbox-group>
 											</view>
 											<view class="demo-uni-col light msg-box" >
 												<view v-for="val,index in msgbox" :key="index">
-													<span style="color: #28a745;">{{val.time_}} => </span> 
-													
+													<span style="color: #28a745;">{{val.time_}} => </span> 													
 													<pre>
 														{{val.msg}}	
 													</pre>
 												</view>
-
 											</view>
 									</uni-col>
 								</uni-row>
@@ -184,6 +153,9 @@
 	    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
 	      return fmt;
 	}
+
+
+	
 	export default {
 		
 		
@@ -195,6 +167,8 @@
 					count:1,
 					headers:""
 				},
+				gutter: 0,
+				nvueWidth: 730,
 				value:"",
 				pingText:"",
 				interval:1,
@@ -211,6 +185,7 @@
 				history:[],
 				errorMsg:"",
 				jsonCheckBox:true,
+				is_show:true,
 				checkBoxItems: [{
 				                        value: '1',
 				                        name: 'json解码'
@@ -231,6 +206,19 @@
 		},
 		created() {
 			this.getCache()
+			console.log(uni.getWindowInfo().windowWidth)
+			if(uni.getWindowInfo().windowWidth < 1019){
+				this.is_show = false
+			}
+			const windowResizeCallback = (res) => {
+			  if(res.size.windowWidth < 1019){
+				  this.is_show = false
+			  }
+			  if(res.size.windowWidth > 1019){
+			  	  this.is_show =  true;
+			  }
+			}
+			uni.onWindowResize(windowResizeCallback)
 		},
 		methods: {
 			sendMsg(){
@@ -449,7 +437,7 @@
 		padding: 20px;
 		font-size: 14px;
 		line-height: 24px;
-		min-width: 1200px;
+		/* min-width: 1200px; */
 	}
 	.msg-box{
 		padding-top: 20rpx;
@@ -508,5 +496,7 @@
 		line-height: 28px;
 		border-radius: 0;
 	}
+
+
 
 </style>

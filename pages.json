@@ -4,7 +4,8 @@
 		"style": {
 			"navigationBarTitleText": "websocket 测试工具"
 		}
-	}],
+	}
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "websocket 测试工具",
