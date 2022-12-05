@@ -1,7 +1,7 @@
 <template>
 	<view class="container">
 		<uni-row class="demo-uni-row">
-			<uni-col :xs="6" :sm="6" :md="6" :lg="6" :xl="6" >
+			<uni-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4" >
 				<view class="demo-uni-col dark">
 
 							<uni-title type="h1" title="历史记录" color="#027fff"></uni-title>
@@ -25,24 +25,32 @@
 					
 								</uni-col>
 								<uni-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4">
-									<uni-easyinput type="number"  v-model="connect.count" placeholder="并发量" />				
+									<uni-easyinput type="number"  v-model="connect.count" placeholder="客户端数(最大253)" />				
 								</uni-col>
 								<uni-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4">
 										<button class="conn-btn" @click="connectFunc" >连接</button>
 								</uni-col>
 								<uni-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4"  style="padding-left: 20px;padding-top: 3px;">
-										<uni-tag :text="''+(successConn)" type="success" :circle="true"></uni-tag>
+										<uni-tag :text="'连接数:'+(successConn)" type="success" :circle="true"></uni-tag>
 								</uni-col>
 								
 							</uni-row>
+<!-- 							<uni-row class="demo-uni-row">
+								<uni-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" >
+									<view style="padding-top: 10rpx;">
+										<uni-easyinput type="textarea" autoHeight  v-model="connect.headers" placeholder="请求头信息,填入json字符串"></uni-easyinput>
+									</view>
+								</uni-col>	
+							</uni-row> -->
+
 						</view>
-	
+
 						<view style="padding-top:40rpx ;">
 								<uni-row class="demo-uni-row" >
 									
 									<uni-col :xs="11" :sm="11" :md="11" :lg="11" :xl="11">
 										<view class="demo-uni-col light">
-											<uni-title type="h1" title="发送区域(不支持并发调试)" color="#027fff"></uni-title>
+											<uni-title type="h1" title="发送区域(以连接数进行并发)" color="#027fff"></uni-title>
 										</view>
 										<view>
 											
@@ -58,7 +66,7 @@
 												秒发送心跳
 												</uni-col>
 												<uni-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4" class="ping-border">
-												  <input type="text"  v-model="pingText" placeholder="ping" style="text-align: center;" />
+												  <input type="text"  v-model="pingText" placeholder="心跳内容" style="text-align: center;" />
 												</uni-col>
 												<uni-col :xs="6" :sm="6" :md="6" :lg="6" :xl="6" class="ping-border">
 													<button class="ping-btn" :class="[pingSwitch?'cancelPing':'sendPing']" @click="startPing" >{{pingBtnText}}</button>
@@ -183,18 +191,21 @@
 			return {
 				href: 'https://uniapp.dcloud.io/component/README?id=uniui',
 				connect:{
-					ws_url:"ws://127.0.0.1:8082/ws",
+					ws_url:"ws://127.0.0.1:9502",
 					count:1,
+					headers:""
 				},
 				value:"",
-				pingText:"ping",
+				pingText:"",
 				interval:1,
 				pingSwitch:false,
 				intervalId:0,
 				pingBtnText:"执行",
 				msgbox:[],
 				sendbox:[],
-				content:"",
+				content:JSON.stringify({
+					"data":"以json方式发送"
+				}, null, 4),
 				successConn:"0",
 				cacheKey:"ws_url_list",
 				history:[],
@@ -236,9 +247,10 @@
 		
 				var time = new Date().Format("yyyy-MM-dd hh:mm:ss");
 				this.sendbox.push({msg:this.content,time_:time})
-				this.WebSocketPool[0].send({data: this.content});
-				this.setCache()
-			
+				for(let i=0;i< this.connect.count;i++){
+					this.WebSocketPool[i].send({data: this.content});
+					this.setCache()
+				}
 			},
 			reloadMsg(msg){
 				
@@ -247,19 +259,28 @@
 			connectFunc(){
 					let this_ = this;
 					this_.successConn = 0;
-					
-						for(let i=1;i<= this_.connect.count;i++){
+					if(this_.connect.count <= 0){
+						this.errorMsg = "请输入客户端数";
+						this.$refs.popup.open()
+						return ;
+					}
+					var headers =  {'Origin':'127.0.0.1'}
+					if(this.connect.headers != ""){
+						headers = JSON.parse(this.connect.headers)
+					}
+					console.log(headers)
+					for(let i=1;i<= this_.connect.count;i++){
 							try{
+							
 								var socketTask = uni.connectSocket({
 									url: this.connect.ws_url,
-									header:{
-										'origin':'127.0.0.1'
-									},
+									header:headers,
 									complete: ()=> {}
 								});
 								socketTask.onOpen(function(){
 									   this_.successConn += 1;
 									   this_.setCache();
+									   this_.WebSocketPool.push(socketTask);
 								})
 								
 								socketTask.onMessage(function(res){
@@ -277,10 +298,12 @@
 								})
 								
 								socketTask.onClose(function(res){
-									  console.log('WebSocket 已关闭！');
+									
+									this_.errorMsg = "连接失败！";
+									this_.$refs.popup.open()
+									console.log('WebSocket 已关闭！');
 								})
-								
-								this.WebSocketPool.push(socketTask);
+							
 							
 							}catch(e){
 								console.log('第'+i+'次连接失败',e)
@@ -389,8 +412,10 @@
 			
 			},
 			sendPing(){
-				
-				this.WebSocketPool[0].send({data: this.pingText });
+				for(let i=0;i< this.connect.count;i++){
+					this.WebSocketPool[i].send({data: this.pingText });
+				}
+
 				console.log("开始定时"+this.pingText);
 			},
 			startPing(){
