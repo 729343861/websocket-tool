@@ -437,7 +437,7 @@
 		padding: 20px;
 		font-size: 14px;
 		line-height: 24px;
-		/* min-width: 1200px; */
+		/* min-width: 750px; */
 	}
 	.msg-box{
 		padding-top: 20rpx;
